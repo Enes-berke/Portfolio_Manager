@@ -1,0 +1,34 @@
+Bu kod parçası, finansal veriler üzerinden volatilite (yıllık bazda) ve portföyün beta değerlerini hesaplar ve Streamlit uygulamasında gösterir. Şimdi bu hesaplamaların ne anlama geldiğini ve kodun nasıl çalıştığını adım adım inceleyelim.
+
+### 1. Volatilite Hesaplama
+```python
+volatility = daily_returns.std() * np.sqrt(252)  # Yıllık volatilite
+st.write("Volatilite (Yıllık):")
+st.dataframe(volatility)
+```
+- **`daily_returns.std()`**: `std()` fonksiyonu, günlük getirilerin standart sapmasını hesaplar. Standart sapma, bir varlığın fiyatının ortalama etrafında ne kadar dalgalandığını gösterir. Yani, volatiliteyi ölçmek için kullanılan temel bir istatistiktir.
+- **`np.sqrt(252)`**: Bu ifade, günlük volatiliteyi yıllık volatiliteye dönüştürmek için kullanılır. Finansal piyasalar genellikle yılda yaklaşık 252 iş günü olduğu varsayılır, bu yüzden `252` sayısının karekökü ile çarpma yapılır.
+  - **Volatilite**: Bir varlığın fiyatındaki dalgalanmaların büyüklüğünü ifade eder. Yüksek volatilite, fiyatın geniş bir aralıkta değiştiğini gösterir; düşük volatilite ise daha stabil bir fiyat hareketine işaret eder.
+- **`st.write("Volatilite (Yıllık):")`**: "Volatilite (Yıllık)" başlığını Streamlit uygulamasında yazar.
+- **`st.dataframe(volatility)`**: Hesaplanan yıllık volatiliteyi tablo olarak gösterir.
+
+### 2. Beta Değeri Hesaplama
+```python
+beta = daily_returns.cov() / daily_returns.var()
+st.write("Beta Değerleri:")
+st.dataframe(beta)
+```
+- **`daily_returns.cov()`**: Bu fonksiyon, getirilerin kovaryans matrisini hesaplar. Kovaryans, iki varlığın getirilerinin nasıl birlikte hareket ettiğini ölçer.
+- **`daily_returns.var()`**: Varyans, getirilerin ne kadar değişken olduğunu ölçer. Varyans, kovaryansın paydasında kullanılarak beta değeri hesaplanır.
+  - **Beta**: Bir varlığın veya portföyün, piyasa ile ne kadar ilişkili olduğunu ölçen bir katsayıdır. Beta, genellikle bir referans endekse (örneğin, S&P 500) göre hesaplanır. 
+    - **Beta = 1**: Varlık, piyasa ile aynı doğrultuda hareket eder.
+    - **Beta > 1**: Varlık, piyasanın üzerinde bir hareketlilik gösterir. Yani, piyasa %1 arttığında varlık %1'den fazla artar.
+    - **Beta < 1**: Varlık, piyasanın altında bir hareketlilik gösterir.
+- **`st.write("Beta Değerleri:")`**: "Beta Değerleri" başlığını yazar.
+- **`st.dataframe(beta)`**: Beta değerlerini tablo olarak Streamlit uygulamasında gösterir.
+
+### Özet
+- **Volatilite**, bir varlığın fiyatındaki dalgalanmaların büyüklüğünü ifade eder. Bu kod, günlük volatiliteyi yıllık volatiliteye çevirir ve bunu gösterir.
+- **Beta değeri**, bir varlığın veya portföyün piyasa ile olan ilişkisini ölçer. Piyasa riskine karşı duyarlılığı anlamak için kullanılır.
+
+Bu hesaplamalar, bir yatırımın risk profili hakkında bilgi sağlar ve yatırımcıların stratejilerini belirlemelerine yardımcı olur.

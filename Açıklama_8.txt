@@ -1,0 +1,30 @@
+Bu satır, bir portföyün standart sapmasını (riskini) hesaplamak için kullanılır. Burada kullanılan matematiksel ifade, portföyün varyansını bulup, ardından bunun karekökünü alarak standart sapmayı (volatiliteyi) elde eder. Şimdi bu işlemin detaylarını açıklayalım:
+
+### Kod Satırı
+```python
+std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+```
+
+### 1. **Kovaryans Matrisi (`cov_matrix`)**
+   - Kovaryans matrisi, her bir varlığın getirisi ile diğer varlıkların getirileri arasındaki ilişkileri içerir. Matrisin elemanları, varlık çiftleri arasındaki kovaryans değerleridir.
+   - **Varyans**: Bir varlığın getirilerinin yayılımını (riskini) gösterir.
+   - **Kovaryans**: İki varlığın getirilerinin birlikte nasıl hareket ettiğini gösterir.
+
+### 2. **Portföy Ağırlıkları (`weights`)**
+   - **`weights`**: Portföydeki her bir varlığın ağırlıklarını içeren bir vektördür. Örneğin, `[0.2, 0.3, 0.5]` gibi bir vektör, üç varlıktan oluşan bir portföydeki varlıkların sırasıyla %20, %30 ve %50 oranında dağıtıldığını gösterir.
+
+### 3. **Matematiksel İşlem: `np.dot(weights.T, np.dot(cov_matrix, weights))`**
+   - **İlk `np.dot(cov_matrix, weights)`**:
+     - Bu işlem, kovaryans matrisini portföy ağırlıkları ile çarpar.
+     - Sonuç, her bir varlığın portföydeki toplam varyansa katkısını içeren bir vektör olur.
+   - **`np.dot(weights.T, ...)`**:
+     - Burada elde edilen vektör, tekrar portföy ağırlıkları ile çarpılır. 
+     - Bu işlem, portföyün toplam varyansını verir.
+   - **Matematiksel olarak**: Bu işlem, \( \text{weights}^T \cdot \text{cov\_matrix} \cdot \text{weights} \) formülüne denk gelir. Bu formül, portföyün toplam varyansını hesaplar.
+
+### 4. **Karekök Alma: `np.sqrt(...)`**
+   - Son olarak, portföyün varyansından standart sapmayı elde etmek için karekök alınır.
+   - **Standart Sapma (`std`)**: Varyansın karekökü olup, portföyün riskini (volatilitesini) temsil eder.
+
+### Özet
+Bu işlem, portföyün standart sapmasını hesaplar. Standart sapma, bir portföyün getirilerinin ne kadar değişken olduğunu gösterir ve finansal riskin bir ölçütüdür. Yüksek bir standart sapma, portföy getirilerinin daha fazla dalgalanma gösterdiğini ve dolayısıyla daha riskli olduğunu ifade eder.

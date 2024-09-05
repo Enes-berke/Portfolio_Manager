@@ -1,0 +1,36 @@
+Bu kod, Sharpe oranını maksimize etmek için kullanılan negatif Sharpe oranını hesaplayan bir fonksiyondur. Sharpe oranı, risk-adjusted getiri ölçümüdür ve genellikle portföy performansını değerlendirmek için kullanılır. Kodun işleyişini daha detaylı açıklayalım:
+
+### `negative_sharpe_ratio` Fonksiyonu
+```python
+def negative_sharpe_ratio(weights, mean_returns, cov_matrix, risk_free_rate=0):
+    p_returns, p_std = portfolio_performance(weights, mean_returns, cov_matrix)
+    return - (p_returns - risk_free_rate) / p_std
+```
+
+#### Parametreler:
+- **`weights`**: Portföydeki her varlığın ağırlıklarını temsil eden bir numpy array (vektör). Örneğin, `[0.2, 0.3, 0.5]` gibi bir vektör.
+- **`mean_returns`**: Her varlığın ortalama getirilerini içeren bir numpy array. Bu, portföydeki her varlığın geçmiş performansını temsil eder.
+- **`cov_matrix`**: Varlık getirilerinin kovaryans matrisidir. Varlıklar arasındaki risk ilişkilerini gösterir.
+- **`risk_free_rate`**: Risksiz getiri oranı. Genellikle devlet tahvilleri gibi düşük riskli varlıkların getiri oranı olarak kabul edilir. Varsayılan değeri 0'dır, ancak gerçek uygulamalarda risk-free rate genellikle pozitif bir değer alır.
+
+#### İşleyiş:
+1. **Portföy Performansı Hesaplama:**
+   ```python
+   p_returns, p_std = portfolio_performance(weights, mean_returns, cov_matrix)
+   ```
+   - `portfolio_performance` fonksiyonu, belirli ağırlıklarla portföyün beklenen getirisini (`p_returns`) ve standart sapmasını (`p_std`) hesaplar.
+   - Bu fonksiyon, portföy ağırlıkları, ortalama getiriler ve kovaryans matrisini kullanarak portföyün performansını değerlendirir.
+
+2. **Sharpe Oranı Hesaplama:**
+   ```python
+   return - (p_returns - risk_free_rate) / p_std
+   ```
+   - **Sharpe Oranı Formülü**: \( \text{Sharpe Oranı} = \frac{\text{Portföy Getirisi} - \text{Risksiz Getiri}}{\text{Portföy Risk}} \)
+   - Burada, portföyün getirisi (`p_returns`) risksiz getiri oranından çıkarılır ve elde edilen fark portföyün riskine (`p_std`) bölünür.
+   - **Negatif Sonuç**: Fonksiyonun `-` işareti ile başlayan kısmı, Sharpe oranının negatifini döndürür. Bu, optimizasyon algoritmalarının minimize etmesi gereken bir değer olduğu için yapılır. Dolayısıyla, Sharpe oranını maksimize etmek için bu negatif değeri minimize ederiz.
+
+#### Özet:
+- **Sharpe Oranı**: Portföy getirisinin risk-adjusted ölçümüdür. Yüksek Sharpe oranı, portföyün risk başına daha iyi getiri sağladığını gösterir.
+- **Negatif Sharpe Oranı**: Bu değer minimize edilmeye çalışılır. Böylece optimizasyon işlemi, Sharpe oranını maksimize eder. Minimize edilen değer, negatif Sharpe oranı olduğundan, gerçek Sharpe oranı en yüksek değere ulaşacaktır.
+
+Bu fonksiyon, portföy optimizasyonu sırasında kullanılmak üzere Sharpe oranını değerlendirmek ve en iyi performansı sağlayacak portföy ağırlıklarını bulmak için tasarlanmıştır.

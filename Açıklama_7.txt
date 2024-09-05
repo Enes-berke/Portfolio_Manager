@@ -1,0 +1,83 @@
+Bu kod parçası, finansal portföy optimizasyonu yapmak için kullanılır. Amaç, Sharpe oranını maksimize ederek portföyün risk-getiri dengesini en iyi hale getirmektir. Şimdi kodu adım adım analiz edelim:
+
+### 1. `portfolio_performance` Fonksiyonu
+```python
+def portfolio_performance(weights, mean_returns, cov_matrix):
+    returns = np.sum(mean_returns * weights)
+    std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+    return returns, std
+```
+- **Amaç**: Bu fonksiyon, belirli ağırlıklara sahip bir portföyün beklenen getirisini ve standart sapmasını (riskini) hesaplar.
+- **Parametreler**:
+  - **`weights`**: Portföydeki her varlığın ağırlıklarını temsil eden bir vektör (numpy array).
+  - **`mean_returns`**: Her varlığın ortalama günlük getirilerini temsil eden bir vektör.
+  - **`cov_matrix`**: Varlık getirilerinin kovaryans matrisidir. Bu matris, varlıkların getirilerinin birbirleriyle nasıl ilişkili olduğunu gösterir.
+- **Hesaplamalar**:
+  - **`returns`**: Portföyün beklenen getirisini hesaplar. Varlık getirilerinin ağırlıklarla çarpımından elde edilir.
+  - **`std`**: Portföyün riskini (standart sapma) hesaplar. Kovaryans matrisi ve portföy ağırlıkları kullanılarak hesaplanır.
+- **Geri Dönüş**: Beklenen getiri ve standart sapmayı (risk) döndürür.
+
+### 2. `negative_sharpe_ratio` Fonksiyonu
+```python
+def negative_sharpe_ratio(weights, mean_returns, cov_matrix, risk_free_rate=0):
+    p_returns, p_std = portfolio_performance(weights, mean_returns, cov_matrix)
+    return - (p_returns - risk_free_rate) / p_std
+```
+- **Amaç**: Sharpe oranını maksimize etmek amacıyla, Sharpe oranının negatifini döndüren bir fonksiyon oluşturur. Optimize ederken minimize edeceğimiz için Sharpe oranını maksimize etmiş oluruz.
+- **Parametreler**:
+  - **`weights`**: Portföy ağırlıkları.
+  - **`mean_returns`** ve **`cov_matrix`**: Daha önce açıklandığı gibi, varlıkların ortalama getirileri ve kovaryans matrisidir.
+  - **`risk_free_rate`**: Risksiz getiri oranıdır. Burada varsayılan olarak 0 verilmiş.
+- **Hesaplamalar**:
+  - **`p_returns` ve `p_std`**: `portfolio_performance` fonksiyonu kullanılarak hesaplanan portföy getirisi ve riski.
+  - **Sharpe Oranı**: Portföyün getirisinden risksiz getiri oranı çıkarılıp, portföyün riskine (standart sapma) bölünerek elde edilir. Ancak bu fonksiyon, negatif Sharpe oranını döndürür.
+- **Geri Dönüş**: Sharpe oranının negatifini döndürür. Bu sayede, minimize ederken aslında Sharpe oranını maksimize ederiz.
+
+### 3. Portföy Optimizasyonu
+```python
+mean_returns = daily_returns.mean()
+cov_matrix = daily_returns.cov()
+```
+- **`mean_returns`**: Her bir varlığın günlük ortalama getirilerini hesaplar.
+- **`cov_matrix`**: Varlık getirilerinin kovaryans matrisini hesaplar.
+
+### 4. Optimizasyon Ayarları
+```python
+num_assets = len(mean_returns)
+args = (mean_returns, cov_matrix)
+constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
+bounds = tuple((0, 1) for asset in range(num_assets))
+```
+- **`num_assets`**: Portföydeki varlık sayısını belirler.
+- **`args`**: `minimize` fonksiyonuna verilecek argümanlar (mean_returns ve cov_matrix).
+- **`constraints`**: Ağırlıkların toplamının 1 olması gerektiğini zorunlu kılan bir kısıt.
+- **`bounds`**: Her varlık için ağırlıkların 0 ile 1 arasında olmasını sağlar (hiçbir varlığın negatif veya 1'den büyük ağırlığa sahip olmaması gerektiğini belirtir).
+
+### 5. Başlangıç Tahmini ve Optimizasyon
+```python
+initial_guess = num_assets * [1. / num_assets]
+optimized = minimize(negative_sharpe_ratio, initial_guess, args=args, method='SLSQP', bounds=bounds, constraints=constraints)
+```
+- **`initial_guess`**: Başlangıç tahmini olarak, her varlık için eşit ağırlık verilmiştir.
+- **`minimize`**: `scipy.optimize.minimize` fonksiyonu kullanılarak, negatif Sharpe oranını minimize eden (yani Sharpe oranını maksimize eden) portföy ağırlıkları optimize edilir.
+  - **`negative_sharpe_ratio`**: Minimize edilecek fonksiyon.
+  - **`initial_guess`**: Optimizasyona başlanacak ağırlıklar.
+  - **`args`**: Fonksiyon için gereken ek argümanlar.
+  - **`method='SLSQP'`**: Kullanılan optimizasyon yöntemi (Sequential Least Squares Programming).
+  - **`bounds`** ve **`constraints`**: Yukarıda tanımlanan sınırlar ve kısıtlar uygulanır.
+
+### 6. Sonuçların Gösterimi
+```python
+opt_weights = optimized['x']
+st.write("Optimize Edilmiş Portföy Ağırlıkları:")
+st.write(opt_weights)
+```
+- **`opt_weights`**: Optimize edilmiş portföy ağırlıklarını içerir.
+- **`st.write`**: Optimize edilmiş portföy ağırlıklarını Streamlit uygulamasında gösterir.
+
+### Özet
+- **Amaç**: Bu kod, bir portföyün Sharpe oranını maksimize etmek için portföydeki varlıkların optimal ağırlıklarını bulur. Sharpe oranı, birim risk başına elde edilen getiri miktarını ölçer.
+- **Optimizasyon**: `scipy.optimize.minimize` fonksiyonu ile, portföyün ağırlıkları optimize edilerek Sharpe oranı maksimize edilir.
+- **Sonuç**: Sonuç olarak, optimize edilmiş portföy ağırlıkları hesaplanır ve bu ağırlıklar, verilen risk-getiri profilini en iyi şekilde optimize eder.
+
+Bu optimizasyon süreci, yatırımcılara, belirli bir risk seviyesinde maksimum getiriyi sağlamak için portföylerini nasıl dağıtmaları gerektiğini gösterir.

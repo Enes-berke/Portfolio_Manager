@@ -1,0 +1,34 @@
+Bu kod parçası, finansal zaman serileri üzerinde hareketli ortalama hesaplamak ve görselleştirmek için bir Streamlit uygulamasında kullanılır. Hareketli ortalama, finansal analizde bir varlığın belirli bir süre boyunca ortalama fiyatını hesaplayarak trendleri analiz etmek için kullanılır. Şimdi kodun nasıl çalıştığını adım adım inceleyelim:
+
+### 1. Hareketli Ortalama Penceresi
+```python
+window_size = st.sidebar.slider("Hareketli Ortalama Penceresi (Gün)", 5, 100, 20)
+```
+- **`st.sidebar.slider`**: Bu fonksiyon, Streamlit uygulamasında bir kaydırıcı (slider) ekler. Kullanıcı, kaydırıcıyı kullanarak hareketli ortalama hesaplaması için pencere boyutunu belirleyebilir.
+  - **"Hareketli Ortalama Penceresi (Gün)"**: Kaydırıcının başlığıdır. Kullanıcıya, pencere boyutunun gün cinsinden ayarlanabileceğini gösterir.
+  - **`5, 100, 20`**: Kaydırıcının minimum değeri 5 gün, maksimum değeri 100 gün ve varsayılan değeri 20 gündür. Kullanıcı bu aralıkta herhangi bir değeri seçebilir.
+  - **`window_size`**: Kullanıcının seçtiği pencere boyutu bu değişkene atanır ve hareketli ortalama hesaplamasında kullanılır.
+
+### 2. Hareketli Ortalama Hesaplama
+```python
+moving_avg = df.rolling(window=window_size).mean()
+```
+- **`df.rolling(window=window_size)`**: Bu fonksiyon, zaman serisini (DataFrame) belirtilen pencere boyutunda "kaydırarak" hareketli bir pencere oluşturur. Bu penceredeki değerlerin ortalaması, hareketli ortalamayı oluşturur.
+  - **`window=window_size`**: Pencere boyutu, kullanıcının kaydırıcıdan seçtiği gün sayısıdır (örneğin, 20 gün).
+- **`.mean()`**: Pencere içerisindeki değerlerin ortalamasını hesaplar. Böylece, her pencere için bir hareketli ortalama değeri elde edilir.
+  - **Hareketli Ortalama**: Bu, belirli bir dönem boyunca varlık fiyatlarının ortalamasını temsil eder. Trendleri anlamak ve kısa vadeli dalgalanmaları filtrelemek için kullanılır.
+
+### 3. Hareketli Ortalama Görselleştirme
+```python
+st.write(f"{window_size} Günlük Hareketli Ortalama:")
+st.line_chart(moving_avg)
+```
+- **`st.write`**: Kullanıcının seçtiği pencere boyutunu ekrana yazdırır, örneğin "20 Günlük Hareketli Ortalama:".
+- **`st.line_chart(moving_avg)`**: Hareketli ortalamayı bir çizgi grafiği (line chart) olarak görselleştirir. Bu grafik, kullanıcıya zaman içindeki trendleri görsel olarak sunar.
+
+### Özet
+- **Hareketli Ortalama**: Bu kod, bir varlığın zaman serisinde belirli bir süre boyunca ortalama fiyatı hesaplar. Bu ortalama, kısa vadeli dalgalanmaları yumuşatır ve daha büyük trendleri daha net görmeyi sağlar.
+- **Dinamik Pencere Boyutu**: Kullanıcı, kaydırıcıyı kullanarak hareketli ortalama için pencere boyutunu belirleyebilir, bu da farklı zaman dilimlerindeki fiyat trendlerini incelemeyi kolaylaştırır.
+- **Görselleştirme**: Hareketli ortalama, çizgi grafiği olarak gösterilir, bu da finansal verilerin analizini görsel olarak yapmayı mümkün kılar.
+
+Bu tür bir analiz, teknik analizde yaygın olarak kullanılır ve yatırımcılara bir varlığın mevcut trendlerini anlamada yardımcı olur.

@@ -1,0 +1,38 @@
+Bu kod parçası, finansal veriler üzerinden günlük, aylık ve yıllık getiri hesaplamalarını yapar ve bunları bir Streamlit uygulamasında görselleştirir. Kodun işlevini adım adım açıklayalım:
+
+### 1. Günlük Getiriler
+```python
+daily_returns = df.pct_change().dropna()
+st.write("Günlük Getiriler:")
+st.dataframe(daily_returns)
+```
+- **`df.pct_change()`**: Bu fonksiyon, bir DataFrame'deki ardışık satırlar arasındaki yüzde değişimlerini hesaplar. Finansal verilerde, bu genellikle bir varlığın günlük getirisini ifade eder.
+- **`dropna()`**: İlk veri noktasında bir önceki değer olmadığı için `NaN` değerler oluşur. Bu satır, `NaN` değerlerini kaldırır.
+- **`st.write("Günlük Getiriler:")`**: Streamlit uygulamasında bir başlık olarak "Günlük Getiriler" metnini yazar.
+- **`st.dataframe(daily_returns)`**: Hesaplanan günlük getirileri tablo şeklinde Streamlit uygulamasında görüntüler.
+
+### 2. Aylık Getiriler
+```python
+monthly_returns = df.resample('M').ffill().pct_change().dropna()
+st.write("Aylık Getiriler:")
+st.dataframe(monthly_returns)
+```
+- **`df.resample('M')`**: Verileri aylık olarak yeniden örnekler. Yani, günlük veriler yerine her ayın son günü için bir değer alır.
+- **`ffill()`**: Bu fonksiyon, yeniden örnekleme işlemi sırasında oluşabilecek boşlukları bir önceki geçerli değerle doldurur.
+- **`pct_change().dropna()`**: Aynı şekilde, aylık getirileri hesaplar ve `NaN` değerleri kaldırır.
+- **`st.write("Aylık Getiriler:")`**: Streamlit uygulamasında "Aylık Getiriler" başlığını yazar.
+- **`st.dataframe(monthly_returns)`**: Aylık getirileri tablo olarak Streamlit uygulamasında gösterir.
+
+### 3. Yıllık Getiriler
+```python
+annual_returns = df.resample('Y').ffill().pct_change().dropna()
+st.write("Yıllık Getiriler:")
+st.dataframe(annual_returns)
+```
+- **`df.resample('Y')`**: Verileri yıllık olarak yeniden örnekler, her yılın son günü için bir değer alır.
+- **`ffill().pct_change().dropna()`**: Aynı işlemler bu kez yıllık getiri hesaplamak için yapılır.
+- **`st.write("Yıllık Getiriler:")`**: "Yıllık Getiriler" başlığını yazar.
+- **`st.dataframe(annual_returns)`**: Yıllık getirileri tablo olarak gösterir.
+
+### Özet
+Bu kod parçası, finansal verilerin farklı zaman dilimlerinde nasıl performans gösterdiğini analiz etmek için günlük, aylık ve yıllık getirileri hesaplar ve bu verileri bir Streamlit uygulamasında kullanıcıya sunar. Getiri hesaplamaları, bir varlığın değerinin zaman içindeki değişimini yansıtmak için yüzde değişimlerini kullanır.

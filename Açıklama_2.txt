@@ -1,0 +1,34 @@
+Bu kod parçası, kullanıcıdan her bir hisse senedi için yatırım miktarını girmesini sağlar. İşte bu kısmın ayrıntılı açıklaması:
+
+### **Kod Açıklaması**
+
+1. **`amounts` Sözlüğü Oluşturma:**
+   ```python
+   amounts = {}
+   ```
+   - Boş bir Python sözlüğü (`dict`) oluşturulur. Bu sözlük, her bir hisse senedi sembolü için yatırım miktarını saklayacaktır.
+
+2. **Yatırım Miktarını Girmek için Döngü:**
+   ```python
+   for sym in symbols:
+   ```
+   - `symbols` listesindeki her bir hisse senedi sembolü için döngü başlatılır. `symbols` listesi, kullanıcının girdiği hisse senedi sembollerini içerir.
+
+3. **Yatırım Miktarını Almak için `number_input`:**
+   ```python
+   amount = st.sidebar.number_input(f'{sym} için yatırım miktarını girin', min_value=0, value=1000)
+   ```
+   - `st.sidebar.number_input()` fonksiyonu, yan menüde bir sayı girişi alanı oluşturur.
+   - Fonksiyonun ilk argümanı (`f'{sym} için yatırım miktarını girin'`), kullanıcıya hangi hisse senedi için yatırım miktarını girmesi gerektiğini belirten bir etiket mesajıdır. `sym`, döngüdeki geçerli hisse senedi sembolünü temsil eder ve kullanıcıya örneğin "AAPL için yatırım miktarını girin" şeklinde bir mesaj gösterilir.
+   - `min_value=0`: Yatırım miktarının sıfırdan küçük olmamasını sağlar.
+   - `value=1000`: Giriş alanının varsayılan değeridir. Kullanıcı bir değer girmeden önce, alan 1000 olarak ayarlanmıştır.
+
+4. **Yatırım Miktarını Sözlüğe Ekleme:**
+   ```python
+   amounts[sym] = amount
+   ```
+   - Kullanıcının girdiği yatırım miktarı, `amounts` sözlüğüne, hisse senedi sembolü anahtarına karşılık gelen değeri olarak eklenir. Bu, her hisse senedi için yatırım miktarlarını saklamak amacıyla kullanılır.
+
+### **Özetle:**
+
+Bu kod parçası, kullanıcının yan menüde her bir hisse senedi için yatırım miktarını girmesine olanak tanır. Girdiği değerleri toplar ve her bir hisse senedi sembolüne karşılık gelen yatırım miktarlarını `amounts` adlı bir sözlükte saklar. Bu sözlük, portföyün değerini hesaplamak için kullanılacaktır.

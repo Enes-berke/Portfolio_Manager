@@ -1,0 +1,70 @@
+Bu kod parçaları, hisse senedi verilerini Yahoo Finance'ten çekip portföyünüzün performansını hesaplamak için kullanılır. İşte her bir bölümün ayrıntılı açıklaması:
+
+### **`load_data` Fonksiyonu**
+
+1. **Fonksiyon Tanımı ve Açıklama:**
+   ```python
+   def load_data(symbols):
+       """
+       Bu fonksiyon, verilen hisse senedi sembollerini kullanarak Yahoo Finance'ten kapanış fiyatlarını çeker.
+       
+       Args:
+       symbols (list): Hisse senedi sembollerinin listesi.
+
+       Returns:
+       pd.DataFrame: Her bir sembol için kapanış fiyatlarını içeren bir DataFrame.
+       """
+   ```
+   - `load_data` fonksiyonu, hisse senedi sembollerinin listesi alır ve bu semboller için kapanış fiyatlarını Yahoo Finance'ten çeker.
+   - `symbols` argümanı, kullanıcı tarafından girilen hisse senedi sembollerini içeren bir liste olmalıdır.
+   - Fonksiyon, her sembol için kapanış fiyatlarını içeren bir `DataFrame` döndürür.
+
+2. **Veri Çekme ve İşleme:**
+   ```python
+   data = {}
+   for sym in symbols:
+       # Verileri indirin ve sadece 'Close' (kapanış) fiyatlarını alın
+       data[sym] = yf.download(sym, start="2023-01-01", end="2024-01-01")['Close']
+   ```
+   - Boş bir sözlük (`data`) oluşturulur ve her hisse senedi sembolü için kapanış fiyatları bu sözlüğe eklenir.
+   - `yf.download(sym, start="2023-01-01", end="2024-01-01")`: Belirtilen sembol için Yahoo Finance'ten veri indirir. Veriler belirtilen tarih aralığında alınır.
+   - `['Close']`: Yalnızca kapanış fiyatlarını içeren sütunu seçer.
+
+3. **DataFrame Oluşturma:**
+   ```python
+   return pd.DataFrame(data)
+   ```
+   - `data` sözlüğündeki veriler bir `DataFrame`'e dönüştürülür. Her hisse senedi sembolü için kapanış fiyatları, `DataFrame`'in sütunları olarak temsil edilir.
+
+### **Veri Yükleme ve Portföy Performansı Hesaplama**
+
+1. **Veriyi Yükleme:**
+   ```python
+   df = load_data(symbols)
+   ```
+   - Daha önce tanımlanan `load_data` fonksiyonu kullanılarak, kullanıcı tarafından girilen semboller için kapanış fiyatları `df` adlı bir `DataFrame`'e yüklenir.
+
+2. **Toplam Yatırım Miktarını Hesaplama:**
+   ```python
+   total_investment = sum(amounts.values())  # Toplam yatırım miktarını hesaplayın
+   ```
+   - `amounts` sözlüğündeki tüm yatırım miktarlarını toplar. Bu, portföyde toplam ne kadar yatırım yapıldığını gösterir.
+
+3. **Her Hissenin Mevcut Değerini Hesaplama:**
+   ```python
+   portfolio_value = df.iloc[-1] * pd.Series(amounts)  # Her bir hissenin mevcut değerini hesaplayın
+   ```
+   - `df.iloc[-1]`: `DataFrame`'in son satırını alır; yani en son kapanış fiyatlarını temsil eder.
+   - `pd.Series(amounts)`: `amounts` sözlüğünü bir `Series`'e dönüştürür.
+   - `df.iloc[-1] * pd.Series(amounts)`: Her hisse senedinin mevcut kapanış fiyatı ile yatırım miktarını çarpar ve her hisse senedinin portföydeki değerini hesaplar.
+
+4. **Portföyün Toplam Değerini Hesaplama:**
+   ```python
+   portfolio_value_total = portfolio_value.sum()  # Portföyün toplam değerini hesaplayın
+   ```
+   - `portfolio_value`'daki her hisse senedinin değerlerini toplar ve portföyün toplam değerini hesaplar.
+
+### **Özetle:**
+
+- **`load_data` Fonksiyonu:** Hisse senedi sembollerinin kapanış fiyatlarını Yahoo Finance'ten çeker ve bunları bir `DataFrame` olarak döndürür.
+- **Portföy Hesaplamaları:** Toplam yatırım miktarını ve her bir hisse senedinin mevcut değerini hesaplar. Son olarak, portföyün toplam değerini belirler. Bu değerler, portföyünüzün performansını değerlendirmek için kullanılır.

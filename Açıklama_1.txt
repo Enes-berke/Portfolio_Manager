@@ -1,0 +1,31 @@
+Bu kod parçası, Streamlit uygulamanızın yan menüsünde (sidebar) kullanıcıdan hisse senedi sembollerini almak için kullanılır. İşte bu kodun detaylı açıklaması:
+
+### **Kod Açıklaması**
+
+1. **Yan Menü Başlığı:**
+   ```python
+   st.sidebar.header('Portföy Bilgileri')
+   ```
+   - Bu satır, yan menüde "Portföy Bilgileri" başlığı altında bir başlık oluşturur. Bu, kullanıcıların portföy bilgilerini girmesi için bir alan olduğunu belirtir.
+
+2. **Hisse Senedi Sembolleri Girişi:**
+   ```python
+   symbols = st.sidebar.text_input('Hisse Senedi Sembolleri (Virgülle ayırın)', 'AAPL, MSFT, TSLA')
+   ```
+   - `st.sidebar.text_input()` fonksiyonu, kullanıcıların yan menüde bir metin kutusuna hisse senedi sembollerini girmesine olanak tanır.
+   - Kullanıcıdan gelen giriş, hisse senedi sembollerini virgülle ayırarak girmesi istenir. Örneğin, "AAPL, MSFT, TSLA".
+   - Varsayılan olarak, bu metin kutusunun içine "AAPL, MSFT, TSLA" yazılır. Bu varsayılan değer, kullanıcı herhangi bir şey girmezse kullanılacak olan örnek veridir.
+
+3. **Sembolleri Listeye Dönüştürme:**
+   ```python
+   symbols = [sym.strip().upper() for sym in symbols.split(',')]
+   ```
+   - Bu satır, kullanıcının girdiği metni işler ve bir liste haline getirir.
+   - `symbols.split(',')`: Kullanıcının girdiği metni virgüllere göre böler ve bir liste oluşturur. Örneğin, "AAPL, MSFT, TSLA" ifadesi, `['AAPL', 'MSFT', 'TSLA']` listesini oluşturur.
+   - `sym.strip()`: Her bir sembolün başındaki ve sonundaki boşlukları temizler.
+   - `sym.upper()`: Her bir sembolü büyük harfe dönüştürür. Bu, sembollerin tutarlı bir formatta olmasını sağlar.
+
+### **Özetle:**
+
+Bu kod parçası, kullanıcıdan hisse senedi sembollerini girmesini sağlayan bir metin kutusu oluşturur ve ardından bu sembolleri bir listeye dönüştürür. Bu liste, hisse senedi verilerini almak ve portföy analizi yapmak için kullanılacaktır.
+
